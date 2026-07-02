@@ -27,7 +27,7 @@ const PROFILES = ["fuel_economy", "balanced", "performance", "track", "towing", 
 export default function ReportDetail() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
-  const { data } = useSWR<Report>(`/reports/${id}`, (p: string) => apiJson(p));
+  const { data } = useSWR<Report>(`/reports/${id}`, (p: string) => apiJson<Report>(p));
   const [profile, setProfile] = useState<(typeof PROFILES)[number]>("balanced");
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | null>(null);

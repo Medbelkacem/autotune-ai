@@ -33,7 +33,7 @@ type Rec = {
 export default function RecommendationPage() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
-  const { data, mutate } = useSWR<Rec>(`/recommendations/${id}`, (p: string) => apiJson(p));
+  const { data, mutate } = useSWR<Rec>(`/recommendations/${id}`, (p: string) => apiJson<Rec>(p));
   const [signature, setSignature] = useState("");
   const [fingerprint, setFingerprint] = useState("");
   const [busy, setBusy] = useState(false);

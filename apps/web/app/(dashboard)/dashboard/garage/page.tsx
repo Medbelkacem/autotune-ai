@@ -17,7 +17,8 @@ type Vehicle = {
 };
 
 export default function GaragePage() {
-  const { data, isLoading, error } = useSWR<Vehicle[]>("/vehicles", (p: string) => apiJson(p));
+  const fetcher = (p: string) => apiJson<Vehicle[]>(p);
+  const { data, isLoading, error } = useSWR<Vehicle[]>("/vehicles", fetcher);
 
   return (
     <div className="space-y-6">

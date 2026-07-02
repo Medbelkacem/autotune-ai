@@ -14,10 +14,11 @@ type Alert = {
   created_at: string;
 };
 
-const tone = (s: string) => (s === "critical" ? "risk" : s === "warning" ? "warn" : "muted") as const;
+const tone = (s: string): "risk" | "warn" | "muted" =>
+  s === "critical" ? "risk" : s === "warning" ? "warn" : "muted";
 
 export default function NotificationsPage() {
-  const { data } = useSWR<Alert[]>("/analytics/alerts", (p: string) => apiJson(p));
+  const { data } = useSWR<Alert[]>("/analytics/alerts", (p: string) => apiJson<Alert[]>(p));
   return (
     <div className="space-y-6">
       <h1 className="text-2xl font-semibold">Notifications</h1>

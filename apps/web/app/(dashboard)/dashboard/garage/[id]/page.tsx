@@ -9,7 +9,7 @@ import { apiFetch, apiJson } from "@/lib/api";
 
 export default function VehiclePage() {
   const { id } = useParams<{ id: string }>();
-  const { data: vehicle } = useSWR(`/vehicles/${id}`, (p) => apiJson(p));
+  const { data: vehicle } = useSWR(`/vehicles/${id}`, (p: string) => apiJson<Record<string, unknown>>(p));
   const [scanning, setScanning] = useState(false);
   const [scanId, setScanId] = useState<string | null>(null);
 
