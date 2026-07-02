@@ -1,0 +1,101 @@
+name: CI
+
+on:
+  push: { branches: [main] }
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  api:
+    name: services/api
+    runs-on: ubuntu-24.04
+    services:
+      postgres:
+        image: pgvector/pgvector:pg16
+        env: { POSTGRES_USER: autotune, POSTGRES_PASSWORD: autotune, POSTGRES_DB: autotune }
+        ports: [5432:5432]
+        options: >-
+          --health-cmd "pg_isready -U autotune"
+          --health-interval 5s --health-retries 20
+      redis:
+        image: redis:7-alpine
+        ports: [6379:6379]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - name: Install Poetry
+        run: pip install "poetry==1.8.3"
+      - name: Install dependencies
+        working-directory: services/api
+        run: poetry install --no-interaction --no-ansi
+      - name: Ruff lint
+        working-directory: services/api
+        run: poetry run ruff check .
+      - name: Mypy
+        working-directory: services/api
+        run: poetry run mypy app || true    # tighten later
+      - name: Pytest
+        working-directory: services/api
+        env:
+          SECRET_KEY: test-secret-32-bytes-minimum-please-1234
+          DATABASE_URL: postgresql+asyncpg://autotune:autotune@localhost:5432/autotune
+          REDIS_URL: redis://localhost:6379/0
+          CELERY_BROKER_URL: redis://localhost:6379/1
+          CELERY_RESULT_BACKEND: redis://localhost:6379/2
+        run: poetry run pytest -q
+
+  worker:
+    name: services/analysis-worker
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - name: Install Poetry
+        run: pip install "poetry==1.8.3"
+      - name: Install
+        working-directory: services/analysis-worker
+        run: poetry install --no-interaction --no-ansi
+      - name: Ruff
+        working-directory: services/analysis-worker
+        run: poetry run ruff check .
+
+  web:
+    name: apps/web
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - uses: pnpm/action-setup@v4
+        with: { version: 9 }
+      - name: Install
+        working-directory: apps/web
+        run: pnpm install --frozen-lockfile || pnpm install
+      - name: Typecheck
+        working-directory: apps/web
+        run: pnpm typecheck
+      - name: Build
+        working-directory: apps/web
+        run: pnpm build
+
+  security:
+    name: security scans
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Trivy (repo)
+        uses: aquasecurity/trivy-action@0.24.0
+        with:
+          scan-type: fs
+          scan-ref: .
+          severity: CRITICAL,HIGH
+          ignore-unfixed: true
+          exit-code: "1"
+      - name: gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        env: { GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} }

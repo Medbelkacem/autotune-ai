@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "autotune-schemas"
+version = "0.1.0"
+description = "Shared Pydantic schemas for AutoTune AI services"
+authors = ["AutoTune AI <eng@autotune.ai>"]
+readme = "README.md"
+packages = [{ include = "autotune_schemas" }]
+
+[tool.poetry.dependencies]
+python = "^3.12"
+pydantic = "^2.9"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

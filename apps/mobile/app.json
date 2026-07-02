@@ -1,0 +1,25 @@
+{
+  "expo": {
+    "name": "AutoTune AI",
+    "slug": "autotune-ai",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "dark",
+    "scheme": "autotune",
+    "newArchEnabled": true,
+    "ios": {
+      "bundleIdentifier": "ai.autotune.app",
+      "supportsTablet": true
+    },
+    "android": {
+      "package": "ai.autotune.app",
+      "adaptiveIcon": {
+        "backgroundColor": "#0b0f19"
+      }
+    },
+    "plugins": ["expo-router"],
+    "extra": {
+      "apiUrl": "http://localhost:8000"
+    }
+  }
+}

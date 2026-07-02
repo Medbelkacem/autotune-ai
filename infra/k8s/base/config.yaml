@@ -1,0 +1,35 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: autotune-api-config
+  namespace: autotune
+data:
+  APP_ENV: "prod"
+  LOG_LEVEL: "INFO"
+  JWT_ISSUER: "https://auth.autotune.ai"
+  JWT_AUDIENCE: "autotune-api"
+  JWT_ACCESS_TTL_SECONDS: "300"
+  JWT_REFRESH_TTL_SECONDS: "2592000"
+  QDRANT_URL: "http://qdrant.autotune.svc.cluster.local:6333"
+  NEO4J_URI: "bolt://neo4j.autotune.svc.cluster.local:7687"
+  OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector.observability.svc.cluster.local:4317"
+---
+# Secret is a placeholder — in production, sync from AWS Secrets Manager / Vault
+# via External Secrets Operator (kind: ExternalSecret).
+apiVersion: v1
+kind: Secret
+metadata:
+  name: autotune-api-secrets
+  namespace: autotune
+type: Opaque
+stringData:
+  SECRET_KEY: "REPLACE_ME_32_BYTES_MINIMUM"
+  DATABASE_URL: "postgresql+asyncpg://autotune:REPLACE@postgres/autotune"
+  REDIS_URL: "redis://redis:6379/0"
+  RABBITMQ_URL: "amqp://autotune:REPLACE@rabbitmq:5672//"
+  CELERY_BROKER_URL: "amqp://autotune:REPLACE@rabbitmq:5672//"
+  CELERY_RESULT_BACKEND: "redis://redis:6379/2"
+  ANTHROPIC_API_KEY: "REPLACE"
+  NEO4J_USER: "neo4j"
+  NEO4J_PASSWORD: "REPLACE"
+  PASSWORD_PEPPER: "REPLACE"

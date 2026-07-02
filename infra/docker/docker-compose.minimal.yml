@@ -1,0 +1,40 @@
+# Minimal data-only stack — start the databases, run the API on your host.
+# Used by scripts/run-local.sh.
+
+name: autotune-min
+
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_USER: autotune
+      POSTGRES_PASSWORD: autotune
+      POSTGRES_DB: autotune
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+      - ./initdb:/docker-entrypoint-initdb.d:ro
+    ports: ["5432:5432"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U autotune -d autotune"]
+      interval: 3s
+      timeout: 3s
+      retries: 30
+
+  redis:
+    image: redis:7-alpine
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes: [redis_data:/data]
+    ports: ["6379:6379"]
+
+  rabbitmq:
+    image: rabbitmq:3.13-management-alpine
+    environment:
+      RABBITMQ_DEFAULT_USER: autotune
+      RABBITMQ_DEFAULT_PASS: autotune
+    ports: ["5672:5672", "15672:15672"]
+    volumes: [rabbit_data:/var/lib/rabbitmq]
+
+volumes:
+  pg_data:
+  redis_data:
+  rabbit_data:

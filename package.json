@@ -1,0 +1,16 @@
+{
+  "name": "autotune-ai-monorepo",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev:web": "pnpm --filter @autotune/web dev",
+    "build:web": "pnpm --filter @autotune/web build",
+    "start:web": "pnpm --filter @autotune/web start",
+    "typecheck": "pnpm -r typecheck",
+    "lint": "pnpm -r lint"
+  },
+  "packageManager": "pnpm@9.12.0",
+  "engines": {
+    "node": ">=20"
+  }
+}

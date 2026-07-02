@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: autotune-worker
+  namespace: autotune
+spec:
+  replicas: 4
+  selector: { matchLabels: { app: autotune-worker } }
+  template:
+    metadata:
+      labels: { app: autotune-worker }
+    spec:
+      serviceAccountName: autotune-worker
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+      containers:
+        - name: worker
+          image: ghcr.io/autotune-ai/analysis-worker:0.1.0
+          args:
+            - celery
+            - -A
+            - worker.celery_app
+            - worker
+            - -l
+            - INFO
+            - -Q
+            - analysis,embedding,simulation
+            - --concurrency=4
+          envFrom:
+            - secretRef: { name: autotune-api-secrets }
+            - configMapRef: { name: autotune-api-config }
+          resources:
+            requests: { cpu: 500m, memory: 1Gi }
+            limits:   { cpu: 2,    memory: 4Gi }
+---
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: autotune-worker-scaler
+  namespace: autotune
+spec:
+  scaleTargetRef:
+    name: autotune-worker
+  minReplicaCount: 2
+  maxReplicaCount: 30
+  triggers:
+    - type: rabbitmq
+      metadata:
+        protocol: amqp
+        queueName: analysis
+        mode: QueueLength
+        value: "10"
+        hostFromEnv: RABBITMQ_URL

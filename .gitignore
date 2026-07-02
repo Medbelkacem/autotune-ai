@@ -1,0 +1,57 @@
+# Environments
+.env
+.env.*
+!.env.example
+.venv/
+venv/
+__pycache__/
+*.pyc
+*.pyo
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Node
+node_modules/
+.next/
+dist/
+build/
+.expo/
+.expo-shared/
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# Secrets & keys
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Local artifacts
+data/
+logs/
+tmp/
+*.sqlite3
+*.db
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.backup
+.terraform.lock.hcl
+
+# Mobile
+ios/Pods/
+android/.gradle/
+android/build/
+android/app/build/

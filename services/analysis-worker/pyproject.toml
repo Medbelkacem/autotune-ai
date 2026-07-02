@@ -1,0 +1,31 @@
+[tool.poetry]
+name = "autotune-analysis-worker"
+version = "0.1.0"
+description = "AutoTune AI — long-running AI / simulation Celery worker"
+authors = ["AutoTune AI <eng@autotune.ai>"]
+packages = [{ include = "worker" }]
+
+[tool.poetry.dependencies]
+python = "^3.12"
+celery = { extras = ["redis"], version = "^5.4.0" }
+sqlalchemy = { extras = ["asyncio"], version = "^2.0.36" }
+asyncpg = "^0.29.0"
+psycopg2-binary = "^2.9.9"
+redis = "^5.1.1"
+httpx = "^0.27.2"
+anthropic = "^0.39.0"
+qdrant-client = "^1.12.1"
+neo4j = "^5.25.0"
+numpy = "^2.1.0"
+pydantic = "^2.9"
+pydantic-settings = "^2.6.0"
+structlog = "^24.4.0"
+autotune-schemas = { path = "../../packages/shared-schemas/python", develop = true }
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.3.3"
+ruff = "^0.7.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
