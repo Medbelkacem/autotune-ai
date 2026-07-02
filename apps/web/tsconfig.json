@@ -16,7 +16,7 @@
     "plugins": [{ "name": "next" }],
     "paths": {
       "@/*": ["./*"],
-      "@autotune/schemas": ["../../packages/shared-schemas/typescript/src/index.ts"]
+      "@autotune/schemas": ["./lib/schemas/index.ts"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
