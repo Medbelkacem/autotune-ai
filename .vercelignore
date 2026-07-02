@@ -1,0 +1,7 @@
+services/
+infra/
+scripts/
+docs/
+AUTOTUNE_AI_ARCHITECTURE.md
+.venv/
+.env

@@ -1,3 +1,5 @@
 packages:
-  - "apps/*"
+  - "apps/web"
   - "packages/shared-schemas/typescript"
+  # apps/mobile is intentionally excluded from the workspace so Vercel doesn't
+  # hydrate Expo/React Native deps. It's a separate app managed by EAS.
